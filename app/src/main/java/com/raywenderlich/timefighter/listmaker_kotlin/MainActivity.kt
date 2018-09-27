@@ -1,5 +1,6 @@
 package com.raywenderlich.timefighter.listmaker_kotlin
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -9,13 +10,17 @@ import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
+import com.raywenderlich.timefighter.listmaker_kotlin.listDetail.ListDetailActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
-
+class MainActivity : AppCompatActivity(), ListSelectionRecyclerViewAdapter.ListSelectionRecyclerViewClickListener {
     lateinit var listsRecyclerView: RecyclerView
-    val listDataManager: ListDataManager = ListDataManager(this)
 
+    val listDataManager: ListDataManager = ListDataManager(this)
+    companion object {
+
+        val INTENT_LIST_KEY = "list"
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -28,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         val lists = listDataManager.readList()
         listsRecyclerView = findViewById(R.id.lists_recyclerview)
         listsRecyclerView.layoutManager = LinearLayoutManager(this)
-        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists)
+        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists, this)
 
 
     }
@@ -67,9 +72,21 @@ class MainActivity : AppCompatActivity() {
             recyclerAdapter.addList(list)
 
             dialogInterface.dismiss()
+            showListDetail(list)
         }
 
         builder.create().show()
     }
+
+    private fun showListDetail(list: TaskList) {
+        val listDetailIntent = Intent(this, ListDetailActivity::class.java)
+        listDetailIntent.putExtra(INTENT_LIST_KEY, list)
+        startActivity(listDetailIntent)
+    }
+
+    override fun listItemClicked(list: TaskList) {
+        showListDetail(list)
+    }
+
 
 }
