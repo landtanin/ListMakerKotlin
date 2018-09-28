@@ -1,9 +1,13 @@
 package com.raywenderlich.timefighter.listmaker_kotlin.listDetail
 
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.InputType
+import android.widget.EditText
 import com.raywenderlich.timefighter.listmaker_kotlin.MainActivity
 import com.raywenderlich.timefighter.listmaker_kotlin.R
 import com.raywenderlich.timefighter.listmaker_kotlin.TaskList
@@ -12,6 +16,7 @@ class ListDetailActivity : AppCompatActivity() {
 
     lateinit var list: TaskList
     lateinit var listItemsRecyclerView: RecyclerView
+    lateinit var addTaskButton: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +26,27 @@ class ListDetailActivity : AppCompatActivity() {
         listItemsRecyclerView = findViewById(R.id.list_detail_recyclerview)
         listItemsRecyclerView.layoutManager = LinearLayoutManager(this)
         listItemsRecyclerView.adapter = ListDetailRecyclerViewAdapter(list)
+        addTaskButton = findViewById(R.id.add_task_button)
+        addTaskButton.setOnClickListener {
+            showCreateTaskDialog()
+
+        }
+
+    }
+
+    private fun showCreateTaskDialog() {
+
+        val taskEditText = EditText(this)
+        taskEditText.inputType = InputType.TYPE_CLASS_TEXT
+        AlertDialog.Builder(this).setTitle(R.string.task_to_add)
+                .setView(taskEditText)
+                .setPositiveButton(R.string.add_task, { dialog, _ ->
+                    val task = taskEditText.text.toString()
+                    list.tasks.add(task)
+                    val recyclerAdapter = listItemsRecyclerView.adapter as ListDetailRecyclerViewAdapter
+                    recyclerAdapter.notifyItemInserted(list.tasks.size)
+                    dialog.dismiss()
+                }).create().show()
 
     }
 

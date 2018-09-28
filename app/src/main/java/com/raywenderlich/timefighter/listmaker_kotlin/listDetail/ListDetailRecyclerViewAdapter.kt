@@ -21,4 +21,5 @@ class ListDetailRecyclerViewAdapter(var list: TaskList): RecyclerView.Adapter<Li
             holder.taskTextView?.text = list.tasks[position]
         }
     }
+
 }
