@@ -1,5 +1,7 @@
 package com.raywenderlich.timefighter.listmaker_kotlin.listDetail
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AlertDialog
@@ -48,6 +50,15 @@ class ListDetailActivity : AppCompatActivity() {
                     dialog.dismiss()
                 }).create().show()
 
+    }
+
+    override fun onBackPressed() {
+        val bundle = Bundle()
+        bundle.putParcelable(MainActivity.INTENT_LIST_KEY, list)
+        val intent = Intent()
+        intent.putExtras(bundle)
+        setResult(Activity.RESULT_OK, intent)
+        super.onBackPressed()
     }
 
 }
